@@ -19,6 +19,12 @@ public class Movement : MonoBehaviour
     private GameObject tripleShot;
     private bool isSpeedPowerupActive = false;
     private bool isShieldActive = false;
+    [SerializeField]
+    private GameObject shieldVisualizer;
+    [SerializeField]
+    private int score;
+    private uiManager _uiManager;
+
 
 
     private void Start()
@@ -26,6 +32,7 @@ public class Movement : MonoBehaviour
 
         transform.position = new Vector3(0, -2.50f, 0);
         spawnManager  = GameObject.Find("Spawn Manager").GetComponent<SpawnManager>();
+        _uiManager = GameObject.Find("Canvas").GetComponent<uiManager>();
     }
 
 
@@ -105,9 +112,11 @@ public class Movement : MonoBehaviour
         if (isShieldActive) { 
         
             isShieldActive = false;
+            shieldVisualizer.SetActive(false);
             return;
         }
         lives--;
+        _uiManager.UpdateLives(lives);
         if (lives < 1) {
             spawnManager.OnPlayerDeath();
             Destroy(this.gameObject);
@@ -123,11 +132,17 @@ public class Movement : MonoBehaviour
     public void shieldPowerupActive() { 
     
         isShieldActive = true;
+        shieldVisualizer.SetActive(true);
     }
 
     IEnumerator TripleShotTimer() {
         yield return new WaitForSeconds(5f);
         isTripleShotActive = false;
 
+    }
+
+    public void AddScore(int points) {
+        score += points;
+        _uiManager.updateScore(score);
     }
 }

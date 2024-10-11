@@ -8,9 +8,10 @@ public class Enemy : MonoBehaviour
 
     [SerializeField]
     private float speed = 4.0f;
+    private Movement player;
     private void Start()
     {
-        
+        player = GameObject.Find("Player").GetComponent<Movement>();   
     }
     void Update()
     {
@@ -26,14 +27,26 @@ public class Enemy : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.transform.CompareTag("Laser") || collision.transform.CompareTag("Player") ) {
-            Movement player = collision.transform.GetComponent<Movement>();
+        if (collision.transform.CompareTag("Player") ) {
+
             if (player != null)
             {
                 player.Damage();
             }
             Destroy(this.gameObject);
         }
-       
+
+        if (collision.transform.CompareTag("Laser"))
+        {
+            if (player != null)
+            {
+                player.AddScore(10);
+
+            }
+            Destroy(this.gameObject);
+            Destroy(collision.gameObject);
+        }
+
+
     }
 }
